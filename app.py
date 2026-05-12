@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from dotenv import load_dotenv
 
-from api.webhook import router as webhook_router
-from api.reviews import router as reviews_router
 from api.repos import router as repos_router
+from api.reviews import router as reviews_router
+from api.webhook import router as webhook_router
 
 load_dotenv()
 
