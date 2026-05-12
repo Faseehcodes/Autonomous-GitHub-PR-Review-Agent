@@ -1,0 +1,14 @@
+# Live Links
+
+Here is my working AI GitHub PR Review Agent:
+
+Dashboard:
+https://githubpragent.lovable.app
+
+GitHub repo:
+https://github.com/Faseehcodes/Autonomous-GitHub-PR-Review-Agent
+
+Backend health:
+https://autonomous-git-hub-pr-review-agent.vercel.app/health
+
+It automatically reviews GitHub pull requests using Groq AI, posts review comments on PRs, saves review history to Supabase, and displays analytics in the dashboard.
