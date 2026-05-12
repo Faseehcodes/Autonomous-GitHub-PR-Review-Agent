@@ -1,35 +1,8 @@
-from langgraph.graph import END, StateGraph
-
 from agent.nodes.analyze import analyze_node
 from agent.nodes.commenter import post_comments_node
 from agent.nodes.security import security_node
 from agent.nodes.triage import triage_node
 from agent.state import PRReviewState
-
-
-def _after_triage(state: PRReviewState) -> str:
-    return "skip" if state.get("triage_result") == "trivial" else "continue"
-
-
-def build_agent():
-    graph = StateGraph(PRReviewState)
-
-    graph.add_node("triage", triage_node)
-    graph.add_node("analyze", analyze_node)
-    graph.add_node("security", security_node)
-    graph.add_node("post_comments", post_comments_node)
-
-    graph.set_entry_point("triage")
-    graph.add_conditional_edges(
-        "triage",
-        _after_triage,
-        {"skip": "post_comments", "continue": "analyze"},
-    )
-    graph.add_edge("analyze", "security")
-    graph.add_edge("security", "post_comments")
-    graph.add_edge("post_comments", END)
-
-    return graph.compile()
 
 
 async def run_review_agent(payload: dict) -> PRReviewState:
@@ -57,5 +30,10 @@ async def run_review_agent(payload: dict) -> PRReviewState:
         "posted": False,
     }
 
-    agent = build_agent()
-    return await agent.ainvoke(initial_state)
+    state = await triage_node(initial_state)
+
+    if state.get("triage_result") != "trivial":
+        state = await analyze_node(state)
+        state = await security_node(state)
+
+    return await post_comments_node(state)
