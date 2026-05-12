@@ -8,3 +8,4 @@ Another test for Supabase save.
 
 Testing Supabase save.
 Testing Supabase save.
+testing lovable connection
